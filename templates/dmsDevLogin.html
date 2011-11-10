@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -9,19 +8,24 @@
     <link rel="stylesheet" type="text/css" href="/static/css/dms.css" />
 	<script type="text/javascript" src="/static/jquery-1.6.4.min.js"></script>
 	<script type="text/javascript" src="/static/jquery-ui-1.8.16.custom.min.js"></script>
-	<script type="text/javascript" src="/static/dms-main.js"></script>
-	<script type="text/javascript" src="/static/dms-games.js"></script>
-	<script type="text/javascript" src="/static/dms-tournaments.js"></script>	
+	<script type="text/javascript" src="/static/dms-devlogin.js"></script>
     <title>Tournament system</title>
   </head>
   <body>
+  	<table class=form>
+	<caption>Developer Login</caption>
+		<tr>
+			<th>Email:</th>
+			<td><input id=email class=text type=text /></td>
+		</tr>
+		<tr>
+			<th>Password:</th>
+			<td><input id=pw class=text type=password /></td>
+		</tr>
+	</table>
 	<p>
-		<button id=games>Games</button>
-		<button id=tournaments>Tournaments</button>
-		<button id=matchs>Matchs</button>
-		<button id=facebook>facebook</button>
+		<button id=login>Login</button>
+		<button id=register>Register</button>
 	</p>
-	<div id=d>
-	</div>
   </body>
 </html>

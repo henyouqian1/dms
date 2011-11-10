@@ -25,7 +25,7 @@ def createTable():
 					''')
 	
 def insertData():
-	for i in xrange(50000):
+	for i in xrange(500000):
 		g.cur.execute('''
 						INSERT INTO Scores (score) VALUES(%i);
 					''' % randint(100, 1000000))

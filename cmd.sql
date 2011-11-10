@@ -1,3 +1,5 @@
-
-INSERT INTO Games (name, big_is_better, create_datetime)VALUES('iDragPaper', FALSE, NOW());
-INSERT INTO Games (name, big_is_better, create_datetime)VALUES('Finger balance', FALSE, NOW());
+CREATE TABLE Awards (	award_id 		INTEGER(20) PRIMARY KEY AUTO_INCREMENT,
+						name			VARCHAR(40),
+						description		VARCHAR(200),
+						image			VARCHAR(100)
+						)ENGINE = InnoDB;

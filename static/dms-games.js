@@ -1,44 +1,12 @@
-$(document).ready(function(){
-	$('button#games').click(function() {
-		requestGameList();
-	});
-	$('button#tournaments').click(function() {
-		requestTournaments();
-	});
-	$('button#matchs').click(function() {
-		requestMatchs();
-	});
-	$('button').button();
-});
-
-function buildTable(th, trs){
-	$('div#d').empty();
-	$('div#d').append("<table id=d></table>");
-	var str='<tr class=head>';
-	$(th).each(function(){
-		str+='<th>'+this+'</th>'
-	});
-	str+='</tr>';
-	$("table#d").append(str);
-	$(trs).each(function(i){
-		var str='<tr class=data>';
-		$(this).each(function(){
-			str+='<td>'+this+'</td>'
-		});
-		str+='</tr>';
-		$("table#d").append(str);
-	});
-}
-
 //games
 function requestGameList(){
 	$.getJSON('lsGames', function(d) {
 		g_td = d;
 		buildTable(d.th, d.trs);
-		$('tr.head').append('<th><button class=addGame>Add</button></td></th>');
+		$('tr.head').prepend('<th><button class=addGame>Add</button></td></th>');
 		$('tr.data').each(function(i){
 			var tr = $(this);
-			tr.append('<td><button class=editGame tabindex='+i+'>Edit</button></td>')
+			tr.prepend('<td><button class=editGame tabindex='+i+'>Edit</button></td>')
 			var str = '<input type=checkbox disabled=disabled value=1 ';
 			if (d.trs[i][2]!=0){
 				str+='checked=checked ';
@@ -62,17 +30,17 @@ function buildAddOrEditGamePage(row){
 	if (isEdit){
 		t='Edit';
 	}
-	var str='<h2>'+t+' Game</h2>';
-	str+='	<table class=form>\
-				<tr>\
-					<th>name:</th>\
-					<td><input id=name class=textfield /></td>\
-				</tr>\
-				<tr>\
-					<th>score_small_better:</th>\
-					<td><input type=checkbox id=big_is_better value=1 /></td>\
-				</tr>\
-			</table>'
+	var str='	<table class=form>\
+				<caption>'+t+' Game</caption>\
+					<tr>\
+						<th>name:</th>\
+						<td><input id=name type=text /></td>\
+					</tr>\
+					<tr>\
+						<th>score_small_better:</th>\
+						<td><input type=checkbox id=big_is_better value=1 /></td>\
+					</tr>\
+				</table>'
 	if (isEdit){
 		str+='<div><button id=ok>ok</button><button id=delete>delete</button><button id=cancel>cancel</button><div>'
 	}else{
@@ -89,9 +57,9 @@ function buildAddOrEditGamePage(row){
 	}
 	$('button#ok').click(function(){
 		var name=nameElem.attr('value');
-		var scoreSmallBetter=bibElem.get(0).checked;
+		var scoreSmallBetter=bibElem.get(0).checked?1:0;
 		if (isEdit){
-			requestEditGame(g_td.trs[row][0], name, scoreSmallBetter?1:0);
+			requestEditGame(g_td.trs[row][0], name, scoreSmallBetter);
 		}else{
 			requestAddGame(name, scoreSmallBetter);
 		}
@@ -101,11 +69,28 @@ function buildAddOrEditGamePage(row){
 	});
 	if (isEdit){
 		$('button#delete').click(function(){
-			requestDelGame(g_td.trs[row][0]);
+			var $dialog = $('<div class=ui-dialog></div>')
+				.html('This game will be permanently deleted and cannot be recovered. Are you sure?!')
+				.dialog({
+					title: 'Delete game',
+					modal: true,
+					buttons: {
+						"Confirm": function() {
+							requestDelGame(g_td.trs[row][0]);
+							$( this ).dialog("close");
+						},
+						Cancel: function() {
+							$( this ).dialog("close");
+						}
+					},
+					close: function(ev, ui) { $(this).dialog('destroy').remove(); } 
+				});
 		});
 	}
 	$('table#d').remove();
 	$('button').button();
+	
+	
 }
 
 function requestAddGame(name, scoreSmallBetter){
@@ -123,22 +108,6 @@ function requestEditGame(id, name, scoreSmallBetter){
 function requestDelGame(id){
 	$.getJSON('delGame', {id:id}, function(){
 		requestGameList();
-	});
-}
-
-//tournaments
-function requestTournaments(){
-	$.getJSON('lsTournaments', function(d) {
-		g_td = d;
-		buildTable(d.th, d.trs);
-	});
-}
-	
-//matchs
-function requestMatchs(){
-	$.getJSON('lsMatchs', function(d) {
-		g_td = d;
-		buildTable(d.th, d.trs);
 	});
 }
 
