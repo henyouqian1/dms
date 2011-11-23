@@ -5,13 +5,11 @@ import MySQLdb
 #import json
 import sys
 
-import dmsAuth
-import dmsMain
 import dmsDev
+import dmsUser
 
-import dmsAuthView
-import dmsMainView
 import dmsDevView
+import dmsUserView
 
 # create our little application :)
 app = Flask(__name__)
@@ -20,9 +18,8 @@ app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
-app.register_blueprint(dmsAuth.authBluePrint)
-app.register_blueprint(dmsMain.mainBluePrint)
 app.register_blueprint(dmsDev.devBluePrint)
+app.register_blueprint(dmsUser.userBluePrint)
 
 
 def connect_db():
@@ -39,72 +36,6 @@ def before_request():
 def teardown_request(exception):
 	g.cur.close()
 	g.conn.close()
-	
-@app.route('/dms')
-def dmsRoot():
-	return render_template('dmsRoot.html')
-	
-@app.route('/_add_numbers')
-def add_numbers():
-    a = request.args.get('a', 0, type=float)
-    b = request.args.get('b', 0, type=float)
-    return jsonify(result=a + b)
-
-@app.route('/')
-def index():
-	code = request.args.get('code', '', type=unicode)
-	return render_template('test.html')
-
-@app.route('/dms/xxx')
-def dmsxxx():
-	return render_template('dms.html')
-
-@app.route('/lsGames')
-def lsGames():
-	g.cur.execute('SELECT game_id, name, score_small_better, modify_datetime FROM Games ORDER BY game_id ASC')
-	th = ['game_id', 'name', 'score_small_better', 'modify_datetime']
-	trs = [[row[0], row[1], row[2], str(row[3])] for row in g.cur.fetchall()]
-	return jsonify(th=th, trs=trs)
-	
-@app.route('/addGame')
-def addGame():
-	name = request.args.get('name', type=unicode)
-	scoreSmallBetter = request.args.get('scoreSmallBetter', 0, type=int)
-	g.cur.execute('INSERT INTO Games (name, score_small_better, modify_datetime) VALUES(%s, %s, NOW())', (name,scoreSmallBetter))
-	#todo check succeed
-	g.conn.commit()
-	return jsonify(result=1)
-	
-@app.route('/editGame')
-def editGame():
-	id = request.args.get('id', -1, type=int)
-	name = request.args.get('name', '', type=unicode)
-	scoreSmallBetter = request.args.get('scoreSmallBetter', type=int)
-	g.cur.execute('UPDATE Games SET name=%s, score_small_better=%s, modify_datetime=NOW() WHERE game_id=%s', (name,scoreSmallBetter,id))
-	#todo check succeed
-	g.conn.commit()
-	return jsonify(result=1)
-	
-@app.route('/delGame')
-def delGame():
-	id = request.args.get('id', -1, type=int)
-	g.cur.execute('DELETE FROM Games WHERE game_id=%s', (id,))
-	#todo check succeed
-	g.conn.commit()
-	return jsonify(result=1)
-	
-@app.route('/lsTournaments')
-def lsTournaments():
-	g.cur.execute('SELECT tournament_id, title, match_num, begin_date, end_date, is_publish, modify_datetime FROM Tournaments ORDER BY tournament_id ASC')
-	th = ['tournament_id', 'title', 'match_num', 'begin_date', 'end_date', 'is_publish', 'modify_datetime']
-	trs = [[row[0], row[1], row[2], str(row[3]), str(row[4]), row[5], str(row[6])] for row in g.cur.fetchall()]
-	return jsonify(th=th, trs=trs)
-	
-@app.route('/lsMatchs')
-def lsMatchs():
-	th = ['match_id', 'tournament_id', 'game_id', 'date', 'prev_match_id', 'pass_mode']
-	trs = []
-	return jsonify(th=th, trs=trs)
 	
 import time
 @app.route('/ltask')

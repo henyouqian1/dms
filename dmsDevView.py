@@ -1,24 +1,22 @@
 ﻿from dmsDev import *
 
+@devBluePrint.route('/dms/devview')
+def devview():
+    return render_template('dmsDev.html')
+    
 @devBluePrint.route('/dms/devloginview')
 def devloginview():
-    return render_template('dmsDevLogin.html')
+    return jsonify(view=render_template('dmsDevLogin.html'))
     
 @devBluePrint.route('/dms/devregisterview')
 def devregisterview():
-	return render_template('dmsDevRegister.html')
+	return jsonify(view=render_template('dmsDevRegister.html'))
 	
 @devBluePrint.route('/dms/devmainmenuview')
-def devdevmainmenuview():
-	id = ''
-	email = ''
-	try:
-		id=session['developer_id']
-		email=session['developer_email']
-	except:
-		return redirect(url_for('.devloginview', _external=True))
-	return render_template('dmsDevMainMenu.html', developer_email=email, developer_id=id)
+def devmainmenuview():
+	return jsonify(view=render_template('dmsDevMainMenu.html'))
 	
 @devBluePrint.route('/dms/devawardview')
-def devaward():
-	return render_template('dmsDevAward.html')
+def devawardview():
+	return jsonify(view=render_template('dmsDevAward.html'), addview=render_template('dmsDevAddAward.html'), editview=render_template('dmsDevEditAward.html'))
+	
