@@ -18,8 +18,11 @@ def userislogin():
 @userBluePrint.route('/dms/userlogin')
 def userlogin():
 	session.clear()
-	email = request.args.get('email', '', type=unicode)
-	password = request.args.get('password', '', type=unicode)
+	email = request.args.get('email', type=unicode)
+	password = request.args.get('password', type=unicode)
+	secretkey = request.args.get('secretkey', type=unicode)
+	if ( email==None or password==None or secretkey==None ):
+		return jsonify(error='pram error')
 	g.cur.execute('SELECT password, user_id FROM Users WHERE email=%s', email)
 	row = g.cur.fetchone()
 	if ( row == None ):
